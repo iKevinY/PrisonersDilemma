@@ -42,10 +42,10 @@ pd Start = ContinueGame ([],[])
     Defect   2\0       0\0
 -}
 
-score C C = (1, 1)
-score C D = (0, 2)
-score D C = (2, 0)
-score D D = (0, 0)
+score C C = (3, 3)
+score C D = (1, 4)
+score D C = (4, 1)
+score D D = (2, 2)
 
 
 -- Element-wise summation of a tuple
