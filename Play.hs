@@ -25,7 +25,9 @@ person_play game (EndOfGame (-1)) opponent =
 
 person_play game (ContinueGame state) opponent =
   do
-    putStrLn ("Move history is "++show (zip (fst state) (snd state))++" (recent -> oldest). 1=coop; 0=defect.")
+    putStrLn("Your moves (new -> old): " ++ show (fst state))
+    putStrLn("Their moves:             " ++ show (snd state))
+    putStrLn("Pick a move... (1 = cooperate, 0 = defect)")
     line <- getLine
     if (read line :: Int) == 1
     then
@@ -36,9 +38,5 @@ person_play game (ContinueGame state) opponent =
 
 -- computer_play game current_result opponent
 -- person has played, the computer must now play
-computer_play game result opponent =
-  let ContinueGame state = result
-    opponent_move = opponent game result
-  in
-    do
-      person_play game (game (Move opponent_move state)) opponent
+computer_play game (ContinueGame state) opponent =
+  person_play game (game (Move (opponent state) state)) opponent

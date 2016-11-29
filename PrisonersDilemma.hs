@@ -11,11 +11,11 @@ data CoopOrDefect = C | D deriving (Enum, Show, Eq)
 not C = D
 not D = C
 
-type AMove = CoopOrDefect                  -- a move for a player
+type AMove = CoopOrDefect          -- a move for a player
 type State = ([AMove], [AMove])    -- (my moves, opponent's moves)
 
-data Action = Move AMove State    -- perform a move to a state
-            | Start              -- returns starting state
+data Action = Move AMove State     -- perform a move to a state
+            | Start                -- returns starting state
 
 data Result = EndOfGame Int        -- end of game
             | ContinueGame State   -- continue with next game state
@@ -23,7 +23,7 @@ data Result = EndOfGame Int        -- end of game
 
 type Game = Action -> Result
 
-type Player = Game -> Result -> AMove
+type Player = State -> AMove
 
 ------ Iterative Prisoner's Dilemma -------
 
@@ -38,8 +38,8 @@ pd Start = ContinueGame ([],[])
 -- Encode the PD scoring mechanism into function
 {-
      A \ B   Coop    Defect
-    Coop     1\1       0\2
-    Defect   2\0       0\0
+    Coop     3\3       1\4
+    Defect   4\1       2\2
 -}
 
 score C C = (3, 3)
@@ -64,20 +64,20 @@ winner amoves bmoves
 ------- AI Strategies -------
 
 always_cooperate :: Player
-always_cooperate _ (ContinueGame _) = C
+always_cooperate (_, _) = C
 
 always_defect :: Player
-always_defect _ (ContinueGame _) = D
+always_defect (_, _) = D
 
 alternating :: Player
-alternating _ (ContinueGame ([], _)) = C
-alternating _ (ContinueGame (yours, _)) = PrisonersDilemma.not (head yours)
+alternating ([], _) = C
+alternating (yours, _) = PrisonersDilemma.not (head yours)
 
 tit_for_tat :: Player
-tit_for_tat _ (ContinueGame ([], _)) = C
-tit_for_tat _ (ContinueGame (_, [])) = C
+tit_for_tat ([], _) = C
+tit_for_tat (_, []) = C
 
 -- Don't cheat by looking ahead at a move you shouldn't see
-tit_for_tat _ (ContinueGame (yours, others))
+tit_for_tat (yours, others)
     | (length others) > (length yours)  = others !! 1
     | otherwise                         = head others
