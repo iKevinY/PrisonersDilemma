@@ -1,11 +1,5 @@
 module PrisonersDilemma where
 
--- To run it, try:
--- ghci
--- :load PrisonersDilemma
--- pd Start
--- pd (Move True ([],[]))
--- pd (Move False ([True, False],[False, False]))
 
 data CoopOrDefect = C | D deriving (Enum, Show, Eq)
 not C = D

@@ -1,16 +1,9 @@
--- CPSC 312 - 2016 - Games in Haskell
 module Play where
-
--- To run it, try:
--- ghci
--- :load Play
--- play always_cooperate
--- play tit_for_tat
 
 import PrisonersDilemma
 import System.IO
 
-
+-- Use `play <opponent-type>` to start a game
 play opponent_type = person_play pd (pd Start) opponent_type
 
 -- opponent has played, the person must now play
@@ -36,7 +29,6 @@ person_play game (ContinueGame state) opponent =
       computer_play game (game (Move D state)) opponent
 
 
--- computer_play game current_result opponent
 -- person has played, the computer must now play
 computer_play game (ContinueGame state) opponent =
   person_play game (game (Move (opponent state) state)) opponent
