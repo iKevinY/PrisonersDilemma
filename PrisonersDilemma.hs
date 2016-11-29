@@ -57,16 +57,26 @@ winner amoves bmoves
 
 ------- AI Strategies -------
 
+-- The agent will always cooperate
 always_cooperate :: Player
 always_cooperate (_, _) = C
 
+-- The agent will always defect
 always_defect :: Player
 always_defect (_, _) = D
 
+-- The agent will alternate defecting and cooperate
 alternating :: Player
 alternating ([], _) = C
 alternating (yours, _) = PrisonersDilemma.not (head yours)
 
+-- The agent will use tit_for_tat
+{-- tit_for_tat: take same action as opponent as previous round
+    Nice: does not initiate cheating
+    Provocable: punishes cheaters
+    Forgiving: able to restore cooperation
+    Stable: performs well against itself
+--}
 tit_for_tat :: Player
 tit_for_tat ([], _) = C
 tit_for_tat (_, []) = C
@@ -75,3 +85,23 @@ tit_for_tat (_, []) = C
 tit_for_tat (yours, others)
     | (length others) > (length yours)  = others !! 1
     | otherwise                         = head others
+
+
+-- tit-for-2tat defects iff opponent defects 2 consecutive rounds
+tit_for_2tat :: Player   
+tit_for_2tat ([], _) = C
+tit_for_2tat (_, []) = C
+
+tit_for_2tat (yours, h:others)
+    | (length others) > (length yours)       = others !! 1
+    | (head others == D) && (h == D)         = D
+    | otherwise                              = C
+
+
+
+
+
+
+
+
+
