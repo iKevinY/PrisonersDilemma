@@ -27,7 +27,7 @@ totalRounds = 10
 
 pd :: Game
 pd (Move move (mine, others))
-    | (length others) == totalRounds = EndOfGame (gamescore others mine)
+    | (length others) >= totalRounds = EndOfGame (gamescore others ([move] ++ mine))
     | otherwise                      = ContinueGame (others, move:mine)
 
 pd Start = ContinueGame ([],[])
@@ -51,22 +51,6 @@ sumtuple x y = ((fst x) + (fst y), (snd x) + (snd y))
 
 -- Calculate score of game
 gamescore amoves bmoves = foldr (\(x, y) acc -> sumtuple (score x y) acc) (0, 0) (zip amoves bmoves)
-
-
--- Returns 1 if the first player won, 0 if draw, -1 if second player won
-winner amoves bmoves
-    | ((fst score) > (snd score)) = 1
-    | ((fst score) < (snd score)) = -1
-    | otherwise = 0
-    where
-        score = gamescore amoves bmoves
-
-
--- Returns the total score of human player after a game ends
---totalScoreA (hmoves, cmoves) = foldr (\(x, y) acc -> fst (score x y) + acc) 0 (zip hmoves cmoves)
-
--- Returns the total score of human player after a game ends
---totalScoreB (hmoves, cmoves) = foldr (\(x, y) acc -> snd (score x y) + acc) 0 (zip hmoves cmoves)
 
 
 ------- AI Strategies -------

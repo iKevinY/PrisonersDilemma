@@ -3,29 +3,33 @@ module Play where
 import PrisonersDilemma
 import System.IO
 
--- Use `play <opponent-type>` to start a game
-play opponent_type = person_play pd (pd Start) opponent_type
+-- Use `play <ai_strategy>` to start a game
+play ai_strategy = person_play pd (pd Start) ai_strategy
 
--- opponent has played, the person must now play (or game is over)
-person_play game (EndOfGame score) opponent =
+-- Game is over
+person_play game (EndOfGame score) ai_strategy =
   do putStrLn "------------ Game Over --------------"
      putStrLn("Final score: " ++ (show (fst score)) ++ "-" ++ (show (snd score)))
+     putStrLn("Best possible score: 40")
+     putStrLn("Worst possible score: 10")
 
-person_play game (ContinueGame state) opponent =
+-- Computer has played, so now the person must play.
+person_play game (ContinueGame state) ai_strategy =
   do
+    putStrLn("------------ Round " ++ (show (length (fst state) + 1)) ++ " --------------")
     putStrLn("Your moves (new -> old): " ++ show (fst state))
     putStrLn("Their moves:             " ++ show (snd state))
     putStrLn("Pick a move... (1 = cooperate, 0 = defect)")
     line <- getLine
     if (read line :: Int) == 1
     then
-      computer_play game (game (Move C state)) opponent
-      else if (read line::Int) == 0
-      then computer_play game (game (Move D state)) opponent
+      computer_play game (game (Move C state)) ai_strategy
+      else if (read line :: Int) == 0
+      then computer_play game (game (Move D state)) ai_strategy
         else do putStrLn "You had a typo. Type again."
-                person_play game (ContinueGame state) opponent
+                person_play game (ContinueGame state) ai_strategy
 
 
 -- person has played, the computer must now play
-computer_play game (ContinueGame state) opponent =
-  person_play game (game (Move (opponent state) state)) opponent
+computer_play game (ContinueGame state) ai_strategy =
+  person_play game (game (Move (ai_strategy state) state)) ai_strategy
