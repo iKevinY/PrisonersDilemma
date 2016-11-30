@@ -10,8 +10,8 @@ play ai_strategy = person_play pd (pd Start) ai_strategy
 person_play game (EndOfGame score) ai_strategy =
   do putStrLn "------------ Game Over --------------"
      putStrLn("Final score: " ++ (show (fst score)) ++ "-" ++ (show (snd score)))
-     putStrLn("Best possible score: 40")
-     putStrLn("Worst possible score: 10")
+     putStrLn("Best possible score: " ++ show (4 * PrisonersDilemma.totalRounds))
+     putStrLn("Worst possible score: " ++ show (1 * PrisonersDilemma.totalRounds))
 
 -- Computer has played, so now the person must play.
 person_play game (ContinueGame state) ai_strategy =
