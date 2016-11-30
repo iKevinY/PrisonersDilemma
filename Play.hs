@@ -7,33 +7,27 @@ import System.IO
 play opponent_type = person_play pd (pd Start) opponent_type
 
 -- opponent has played, the person must now play
-person_play game (EndOfGame 1) opponent =
+person_play game (EndOfGame 1 score) opponent =
   do putStrLn "------------ Game Over --------------"
      putStrLn "Results:"
      putStrLn "-> Computer won."
-     putStrLn "-> Your score: " 
-     putStrLn "-> Computer's score: " 
-     putStrLn "Type 'show' for reviewing the rounds: "
+     putStrLn("Score: " ++ (show score))
 
-person_play game (EndOfGame 0) opponent =
+person_play game (EndOfGame 0 score) opponent =
   do putStrLn "------------ Game Over --------------"
      putStrLn "Result:"
      putStrLn "-> It's a draw."
-     putStrLn "-> Your score: " 
-     putStrLn "-> Computer's score: " 
-     putStrLn "Type 'show' for reviewing the rounds: "
+     putStrLn("Score: " ++ (show score))
 
-person_play game (EndOfGame (-1)) opponent =
+person_play game (EndOfGame (-1) score) opponent =
   do putStrLn "------------ Game Over --------------"
      putStrLn "Results:"
      putStrLn "-> You won."
-     putStrLn "-> Your score: " 
-     putStrLn "-> Computer's score: " 
-     putStrLn "Type 'show' for reviewing the rounds: "
+     putStrLn("Score: " ++ (show score))
 
 person_play game (ContinueGame state) opponent =
   do
-    putStrLn("Your moves (new -> old): " ++ show (fst state))
+    putStrLn("Your moves (n -> old): " ++ show (fst state))
     putStrLn("Their moves:             " ++ show (snd state))
     putStrLn("Pick a move... (1 = cooperate, 0 = defect)")
     line <- getLine

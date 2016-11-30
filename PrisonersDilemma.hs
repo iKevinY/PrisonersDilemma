@@ -11,7 +11,7 @@ type State = ([AMove], [AMove])    -- (my moves, opponent's moves)
 data Action = Move AMove State     -- perform a move to a state
             | Start                -- returns starting state
 
-data Result = EndOfGame Int        -- end of game
+data Result = EndOfGame Int (Int,Int)        -- end of game
             | ContinueGame State   -- continue with next game state
                 deriving (Eq, Show)
 
@@ -27,7 +27,7 @@ totalRounds = 10
 
 pd :: Game
 pd (Move move (mine, others))
-    | (length others) == totalRounds = EndOfGame (winner mine others)
+    | (length others) == totalRounds = EndOfGame (winner mine others) (gamescore mine others)
     | otherwise                      = ContinueGame (others, move:mine)
 
 pd Start = ContinueGame ([],[])
@@ -49,14 +49,17 @@ score D D = (2, 2)
 -- Element-wise summation of a tuple
 sumtuple x y = ((fst x) + (fst y), (snd x) + (snd y))
 
+-- Calculate score of game
+gamescore amoves bmoves = foldr (\(x, y) acc -> sumtuple (score x y) acc) (0, 0) (zip amoves bmoves)
+
 
 -- Returns 1 if the first player won, 0 if draw, -1 if second player won
 winner amoves bmoves
-    | ((fst gamescore) > (snd gamescore)) = 1
-    | ((fst gamescore) < (snd gamescore)) = -1
+    | ((fst score) > (snd score)) = 1
+    | ((fst score) < (snd score)) = -1
     | otherwise = 0
     where
-        gamescore = foldr (\(x, y) acc -> sumtuple (score x y) acc) (0, 0) (zip amoves bmoves)
+        score = gamescore amoves bmoves
 
 
 -- Returns the total score of human player after a game ends
