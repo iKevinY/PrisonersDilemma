@@ -11,12 +11,11 @@ type State = ([AMove], [AMove])    -- (my moves, opponent's moves)
 data Action = Move AMove State     -- perform a move to a state
             | Start                -- returns starting state
 
-data Result = EndOfGame Int (Int,Int)        -- end of game
+data Result = EndOfGame (Int,Int)  -- end of game
             | ContinueGame State   -- continue with next game state
-                deriving (Eq, Show)
+              deriving (Eq, Show)
 
 type Game = Action -> Result
-
 type Player = State -> AMove
 
 -- totalRounds can be either known or unknown to the players
@@ -27,7 +26,7 @@ totalRounds = 10
 
 pd :: Game
 pd (Move move (mine, others))
-    | (length others) == totalRounds = EndOfGame (winner mine others) (gamescore mine others)
+    | (length others) >= totalRounds = EndOfGame (gamescore others ([move] ++ mine))
     | otherwise                      = ContinueGame (others, move:mine)
 
 pd Start = ContinueGame ([],[])
@@ -51,22 +50,6 @@ sumtuple x y = ((fst x) + (fst y), (snd x) + (snd y))
 
 -- Calculate score of game
 gamescore amoves bmoves = foldr (\(x, y) acc -> sumtuple (score x y) acc) (0, 0) (zip amoves bmoves)
-
-
--- Returns 1 if the first player won, 0 if draw, -1 if second player won
-winner amoves bmoves
-    | ((fst score) > (snd score)) = 1
-    | ((fst score) < (snd score)) = -1
-    | otherwise = 0
-    where
-        score = gamescore amoves bmoves
-
-
--- Returns the total score of human player after a game ends
---totalScoreA (hmoves, cmoves) = foldr (\(x, y) acc -> fst (score x y) + acc) 0 (zip hmoves cmoves)
-
--- Returns the total score of human player after a game ends
---totalScoreB (hmoves, cmoves) = foldr (\(x, y) acc -> snd (score x y) + acc) 0 (zip hmoves cmoves)
 
 
 ------- AI Strategies -------
@@ -102,7 +85,7 @@ tit_for_tat (yours, others)
 
 
 -- tit_for_2tat defects iff opponent defects 2 consecutive rounds
-tit_for_2tat :: Player   
+tit_for_2tat :: Player
 tit_for_2tat ([], _) = C
 tit_for_2tat (_, []) = C
 
@@ -112,12 +95,12 @@ tit_for_2tat (yours, h:others)
     | otherwise                              = C
 
 -- tit_for_tatl is tit_for_tat except that it cheats the last round
-{-- 
+{--
     This strategy is sometimes used when playes know how many rounds in total there are.
     Although it may lead to infinite regress problem
 --}
 
-tit_for_tatl:: Player   
+tit_for_tatl:: Player
 tit_for_tatl ([], _) = C
 tit_for_tatl (_, []) = C
 
@@ -125,12 +108,3 @@ tit_for_tatl (yours, h:others)
     | (length others) > (length yours)       = others !! 1
     | (length others) == (totalRounds - 2)   = D
     | otherwise                              = C
-
-
-
-
-
-
-
-
-
