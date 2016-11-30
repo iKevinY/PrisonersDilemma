@@ -11,7 +11,7 @@ type State = ([AMove], [AMove])    -- (my moves, opponent's moves)
 data Action = Move AMove State     -- perform a move to a state
             | Start                -- returns starting state
 
-data Result = EndOfGame Int (Int,Int)        -- end of game
+data Result = EndOfGame (Int,Int)  -- end of game
             | ContinueGame State   -- continue with next game state
                 deriving (Eq, Show)
 
@@ -27,7 +27,7 @@ totalRounds = 10
 
 pd :: Game
 pd (Move move (mine, others))
-    | (length others) == totalRounds = EndOfGame (winner mine others) (gamescore mine others)
+    | (length others) == totalRounds = EndOfGame (gamescore others mine)
     | otherwise                      = ContinueGame (others, move:mine)
 
 pd Start = ContinueGame ([],[])
@@ -102,7 +102,7 @@ tit_for_tat (yours, others)
 
 
 -- tit_for_2tat defects iff opponent defects 2 consecutive rounds
-tit_for_2tat :: Player   
+tit_for_2tat :: Player
 tit_for_2tat ([], _) = C
 tit_for_2tat (_, []) = C
 
@@ -112,12 +112,12 @@ tit_for_2tat (yours, h:others)
     | otherwise                              = C
 
 -- tit_for_tatl is tit_for_tat except that it cheats the last round
-{-- 
+{--
     This strategy is sometimes used when playes know how many rounds in total there are.
     Although it may lead to infinite regress problem
 --}
 
-tit_for_tatl:: Player   
+tit_for_tatl:: Player
 tit_for_tatl ([], _) = C
 tit_for_tatl (_, []) = C
 
