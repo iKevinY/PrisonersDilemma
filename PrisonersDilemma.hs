@@ -13,10 +13,9 @@ data Action = Move AMove State     -- perform a move to a state
 
 data Result = EndOfGame (Int,Int)  -- end of game
             | ContinueGame State   -- continue with next game state
-                deriving (Eq, Show)
+              deriving (Eq, Show)
 
 type Game = Action -> Result
-
 type Player = State -> AMove
 
 -- totalRounds can be either known or unknown to the players
@@ -109,12 +108,3 @@ tit_for_tatl (yours, h:others)
     | (length others) > (length yours)       = others !! 1
     | (length others) == (totalRounds - 2)   = D
     | otherwise                              = C
-
-
-
-
-
-
-
-
-
