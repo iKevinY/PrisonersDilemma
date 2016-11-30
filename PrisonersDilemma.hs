@@ -58,11 +58,12 @@ winner amoves bmoves
     where
         gamescore = foldr (\(x, y) acc -> sumtuple (score x y) acc) (0, 0) (zip amoves bmoves)
 
--- Returns the total score of human player after a game ends
-totalScoreA amoves bmoves = foldr (\(x, y) acc -> fst (score x y) + acc) 0 (zip amoves bmoves)
 
 -- Returns the total score of human player after a game ends
-totalScoreB amoves bmoves = foldr (\(x, y) acc -> snd (score x y) + acc) 0 (zip amoves bmoves)
+--totalScoreA (hmoves, cmoves) = foldr (\(x, y) acc -> fst (score x y) + acc) 0 (zip hmoves cmoves)
+
+-- Returns the total score of human player after a game ends
+--totalScoreB (hmoves, cmoves) = foldr (\(x, y) acc -> snd (score x y) + acc) 0 (zip hmoves cmoves)
 
 
 ------- AI Strategies -------
