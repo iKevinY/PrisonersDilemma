@@ -19,12 +19,16 @@ type Game = Action -> Result
 
 type Player = State -> AMove
 
+-- totalRounds can be either known or unknown to the players
+totalRounds = 10
+
+
 ------ Iterative Prisoner's Dilemma -------
 
 pd :: Game
 pd (Move move (mine, others))
-    | (length others) == 10 = EndOfGame (winner mine others)
-    | otherwise            = ContinueGame (others, move:mine)
+    | (length others) == totalRounds = EndOfGame (winner mine others)
+    | otherwise                      = ContinueGame (others, move:mine)
 
 pd Start = ContinueGame ([],[])
 
@@ -87,7 +91,7 @@ tit_for_tat (yours, others)
     | otherwise                         = head others
 
 
--- tit-for-2tat defects iff opponent defects 2 consecutive rounds
+-- tit_for_2tat defects iff opponent defects 2 consecutive rounds
 tit_for_2tat :: Player   
 tit_for_2tat ([], _) = C
 tit_for_2tat (_, []) = C
@@ -95,6 +99,21 @@ tit_for_2tat (_, []) = C
 tit_for_2tat (yours, h:others)
     | (length others) > (length yours)       = others !! 1
     | (head others == D) && (h == D)         = D
+    | otherwise                              = C
+
+-- tit_for_tatl is tit_for_tat except that it cheats the last round
+{-- 
+    This strategy is sometimes used when playes know how many rounds in total there are.
+    Although it may lead to infinite regress problem
+--}
+
+tit_for_tatl:: Player   
+tit_for_tatl ([], _) = C
+tit_for_tatl (_, []) = C
+
+tit_for_tatl (yours, h:others)
+    | (length others) > (length yours)       = others !! 1
+    | (length others) == (totalRounds - 2)   = D
     | otherwise                              = C
 
 
