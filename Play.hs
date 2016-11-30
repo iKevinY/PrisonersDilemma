@@ -25,8 +25,10 @@ person_play game (ContinueGame state) opponent =
     if (read line :: Int) == 1
     then
       computer_play game (game (Move C state)) opponent
-    else
-      computer_play game (game (Move D state)) opponent
+      else if (read line::Int) == 0 
+      then computer_play game (game (Move D state)) opponent
+        else do putStrLn "You had a typo. Type again."
+                person_play game (ContinueGame state) opponent
 
 
 -- person has played, the computer must now play

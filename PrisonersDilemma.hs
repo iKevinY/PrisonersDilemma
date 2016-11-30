@@ -23,7 +23,7 @@ type Player = State -> AMove
 
 pd :: Game
 pd (Move move (mine, others))
-    | (length others) == 5 = EndOfGame (winner mine others)
+    | (length others) == 10 = EndOfGame (winner mine others)
     | otherwise            = ContinueGame (others, move:mine)
 
 pd Start = ContinueGame ([],[])
