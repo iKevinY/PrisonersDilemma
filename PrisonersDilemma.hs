@@ -6,7 +6,7 @@ not C = D
 not D = C
 
 type AMove = CoopOrDefect          -- a move for a player
-type State = ([AMove], [AMove])    -- (my moves, opponent's moves)
+type State = ([AMove], [AMove])    -- (my moves, agent's moves)
 
 data Action = Move AMove State     -- perform a move to a state
             | Start                -- returns starting state
@@ -90,7 +90,7 @@ tit_for_2tat ([], _) = C
 tit_for_2tat (_, []) = C
 
 tit_for_2tat (yours, h:others)
-    | (length others) > (length yours)       = others !! 1
+    | (length others) > ((length yours) -1)  = others !! 1
     | (head others == D) && (h == D)         = D
     | otherwise                              = C
 
@@ -105,6 +105,43 @@ tit_for_tatl ([], _) = C
 tit_for_tatl (_, []) = C
 
 tit_for_tatl (yours, h:others)
-    | (length others) > (length yours)       = others !! 1
+    | (length others) > ((length yours)-1)   = others !! 1
     | (length others) == (totalRounds - 2)   = D
-    | otherwise                              = C
+    | otherwise                              = head others
+
+
+{-- morerobust strategy:
+    Always cooperate the first round
+    if human player defects the first round
+        agent will assume always defect thus also always defects
+    The agent will defect the second round no matter what to test what
+    the human player's strategy is.
+    
+    If the human player cooperate the second round but defects the third
+    round, it's very likely he is using tit-for-tat. Then the agent will 
+    use tit_for_tatl
+
+    If the human player cooperate both the second and third round, it's
+    likely that he is using tit_for_2tat or always cooperating, then the 
+    agent will defect the next round to test further
+
+--}
+
+{-- Unfinished: stuck for now
+morerobust:: Player
+morerobust (_, []) = C
+
+morerobust (yours, others++[d])
+    | length yours < (length others++[d]) + 1     = others !! 1
+    | d == D                                 = D
+    | otherwise                              = morerobust2(yours,others)
+
+morerobust2 (yours, others) = D 
+--}
+    
+
+
+
+
+
+
