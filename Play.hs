@@ -39,3 +39,22 @@ person_play game (ContinueGame state) ai_strategy =
 -- person has played, the computer must now play
 computer_play game (ContinueGame state) ai_strategy =
   person_play game (game (Move (ai_strategy state) state)) ai_strategy
+
+
+
+-- Use `cpu_play <strategy_1> <strategy_2> to make 2 AIs play against each other
+cpu_play strat_1 strat_2 = cpu_1_play pd (pd Start) strat_1 strat_2
+
+cpu_1_play game(EndOfGame final_score) strat_1 strat_2 =
+  do putStrLn "------------ Game Over --------------"
+     putStrLn("Final score (CPU 1, CPU 2): " ++ show ((fst final_score),(snd final_score)))
+     putStrLn("* Best possible score: " ++ show ((fst (PD.score D C)) * PD.totalRounds))
+     putStrLn("* Worst possible score: " ++ show ((snd (PD.score D C)) * PD.totalRounds))
+     putStrLn("* Best possible group score: " ++ show ((fst (PD.score C C)) * PD.totalRounds, (fst (PD.score C C)) * PD.totalRounds))
+     putStrLn("* Worst possible group score: " ++ show ((fst (PD.score D D)) * PD.totalRounds, (fst (PD.score D D)) * PD.totalRounds))
+
+cpu_1_play game (ContinueGame state) strat_1 strat_2 =
+  cpu_2_play game (game (Move (strat_1 state) state)) strat_1 strat_2
+
+cpu_2_play game (ContinueGame state) strat_1 strat_2 =
+  cpu_1_play game (game (Move (strat_2 state) state)) strat_1 strat_2
